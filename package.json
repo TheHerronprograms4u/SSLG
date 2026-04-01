@@ -2,7 +2,7 @@
   "name": "sslg-feedback-root",
   "private": true,
   "scripts": {
-    "install-all": "npm install && cd client && npm install && cd ../server && npm install",
-    "build-all": "cd client && npm run build && cd ../server && npm run build"
+    "install": "cd client && npm install && cd ../server && npm install",
+    "build": "cd client && npm run build"
   }
 }
