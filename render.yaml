@@ -1,0 +1,35 @@
+services:
+  # Backend Server
+  - type: web
+    name: sslg-backend
+    env: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install && npx tsc
+    startCommand: node dist/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 5000
+
+  # Frontend Client
+  - type: web
+    name: sslg-frontend
+    env: static
+    plan: free
+    rootDir: client
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: sslg-backend
+          property: host
+    routes:
+      - type: rewrite
+        src: /*
+        dest: /index.html
