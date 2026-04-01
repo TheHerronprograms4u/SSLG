@@ -16,12 +16,13 @@ services:
         value: 5000
 
   # Frontend Client
-  - type: static
+  - type: web
     name: sslg-frontend
+    runtime: static
     plan: free
     rootDir: client
     buildCommand: npm install && npm run build
-    publishDir: dist
+    staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
         fromService:
