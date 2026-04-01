@@ -16,9 +16,8 @@ services:
         value: 5000
 
   # Frontend Client
-  - type: web
+  - type: static
     name: sslg-frontend
-    env: static
     plan: free
     rootDir: client
     buildCommand: npm install && npm run build
@@ -31,5 +30,5 @@ services:
           property: host
     routes:
       - type: rewrite
-        src: /*
-        dest: /index.html
+        source: /*
+        destination: /index.html
