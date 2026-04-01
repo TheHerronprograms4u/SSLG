@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/config';
-import { LayoutDashboard, LogOut, MessageCircle, BarChart3, Clock } from 'lucide-react';
+import { LayoutDashboard, LogOut, MessageCircle, Clock } from 'lucide-react';
 
 const Admin: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
