@@ -3,7 +3,6 @@ services:
   - type: web
     name: sslg-backend
     env: node
-    plan: free
     rootDir: server
     buildCommand: npm install && npx tsc
     startCommand: node dist/index.js
@@ -19,7 +18,6 @@ services:
   - type: web
     name: sslg-frontend
     runtime: static
-    plan: free
     rootDir: client
     buildCommand: npm install && npm run build
     staticPublishPath: dist
