@@ -67,13 +67,34 @@ app.post('/api/admin/login', async (req: Request, res: Response) => {
       .eq('username', username)
       .single();
     
-    if (error || !admin || !bcrypt.compareSync(password, admin.password_hash)) {
+    if (error || !admin) {
+      console.log('Login failed: Admin not found or DB error');
+      return res.status(401).json({ error: 'Invalid credentials.' });
+    }
+
+    // Try bcrypt comparison first, then fallback to plain text if that fails.
+    // This supports both newly hashed passwords and any existing legacy plain-text entries.
+    let isPasswordCorrect = false;
+    try {
+      isPasswordCorrect = bcrypt.compareSync(password, admin.password_hash);
+    } catch (e) {
+      console.log('Bcrypt comparison failed (likely plain text in DB)');
+    }
+
+    if (!isPasswordCorrect && password === admin.password_hash) {
+      isPasswordCorrect = true;
+      console.log('Plain text password match detected for:', username);
+    }
+    
+    if (!isPasswordCorrect) {
+      console.log('Login failed: Incorrect password for:', username);
       return res.status(401).json({ error: 'Invalid credentials.' });
     }
     
     const token = jwt.sign({ id: admin.id, username: admin.username }, JWT_SECRET, { expiresIn: '8h' });
     res.json({ token });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ error: 'Login failed.' });
   }
 });
