@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/config";
+import { supabase } from "../api/supabase";
 import {
   BookOpen,
   Building2,
@@ -37,7 +37,19 @@ const Feedback: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post("/api/feedback", formData);
+      const { error } = await supabase
+        .from('feedback')
+        .insert([
+          { 
+            category: formData.category, 
+            rating: formData.rating, 
+            message: formData.message, 
+            is_anonymous: formData.is_anonymous, 
+            student_id: formData.is_anonymous ? null : formData.student_id 
+          }
+        ]);
+
+      if (error) throw error;
       setSubmitted(true);
     } catch (error) {
       console.log(error);

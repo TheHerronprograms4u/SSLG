@@ -1,68 +1,81 @@
 import React, { useState, useEffect } from "react";
-import api from "../api/config";
+import { supabase } from "../api/supabase";
 import { LayoutDashboard, LogOut, MessageCircle, Clock } from "lucide-react";
 
 const Admin: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [stats, setStats] = useState<any>(null);
   const [responses, setResponses] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (token) {
-      setIsLoggedIn(true);
-      fetchDashboardData();
-    }
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setIsLoggedIn(true);
+        fetchDashboardData();
+      }
+    };
+    checkSession();
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await api.post("/api/admin/login", {
-        username,
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
         password,
       });
 
-      const { token } = res.data;
-      localStorage.setItem("adminToken", token);
+      if (error) throw error;
+      
       setIsLoggedIn(true);
       fetchDashboardData();
-    } catch (error) {
-      alert("Invalid credentials");
+    } catch (error: any) {
+      alert(error.message || "Invalid credentials");
     } finally {
       setLoading(false);
     }
   };
 
   const fetchDashboardData = async () => {
-    const token = localStorage.getItem("adminToken");
-    if (!token) return;
-
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+      // Fetch Responses
+      const { data: feedbackData, error: feedbackError } = await supabase
+        .from('feedback')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-      const [statsRes, responsesRes] = await Promise.all([
-        api.get("/api/admin/stats", config),
-        api.get("/api/admin/responses", config),
-      ]);
+      if (feedbackError) throw feedbackError;
+      
+      setResponses(feedbackData || []);
 
-      setStats(statsRes.data);
-      setResponses(responsesRes.data);
+      // Calculate Stats
+      const categories = ['academics', 'facilities', 'events', 'leadership', 'welfare'];
+      const categoryDistribution = categories.map(cat => {
+        const catFeedback = feedbackData?.filter(f => f.category === cat) || [];
+        const count = catFeedback.length;
+        const avg_rating = count > 0 
+          ? catFeedback.reduce((sum, f) => sum + f.rating, 0) / count 
+          : 0;
+        
+        return { category: cat, count, avg_rating };
+      });
+
+      setStats({
+        totalResponses: feedbackData?.length || 0,
+        categoryDistribution,
+      });
     } catch (error) {
-      handleLogout();
+      console.error("Error fetching data:", error);
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("adminToken");
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setIsLoggedIn(false);
     setStats(null);
     setResponses([]);
@@ -78,24 +91,24 @@ const Admin: React.FC = () => {
           <form onSubmit={handleLogin}>
             <div style={{ marginBottom: "1rem" }}>
               <label
-                htmlFor="username"
+                htmlFor="email"
                 style={{
                   display: "block",
                   fontSize: "0.9rem",
                   marginBottom: "0.5rem",
                 }}
               >
-                Username
+                Email
               </label>
               <input
-                id="username"
-                name="username"
-                type="text"
+                id="email"
+                name="email"
+                type="email"
                 className="input"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
-                autoComplete="username"
+                autoComplete="email"
               />
             </div>
             <div style={{ marginBottom: "1.5rem" }}>
