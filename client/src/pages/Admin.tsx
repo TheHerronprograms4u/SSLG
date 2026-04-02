@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../api/supabase";
-import { LayoutDashboard, LogOut, MessageCircle, Clock, X, Trash2 } from "lucide-react";
+import { LayoutDashboard, LogOut, MessageCircle, Clock, X } from "lucide-react";
 
 const Admin: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -72,24 +72,6 @@ const Admin: React.FC = () => {
       });
     } catch (error) {
       console.error("Error fetching data:", error);
-    }
-  };
-
-  const handleDeleteFeedback = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this feedback?")) return;
-    
-    try {
-      const { error } = await supabase
-        .from('feedback')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      
-      setSelectedFeedback(null);
-      fetchDashboardData();
-    } catch (error: any) {
-      alert(error.message || "Error deleting feedback");
     }
   };
 
@@ -441,28 +423,6 @@ const Admin: React.FC = () => {
                   ? "Anonymous Submission"
                   : `Student ID: ${selectedFeedback.student_id || "Not provided"}`}
               </div>
-              
-              <button 
-                onClick={() => handleDeleteFeedback(selectedFeedback.id)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  color: "#ef4444",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  fontWeight: 600,
-                  fontSize: "0.9rem",
-                  padding: "8px",
-                  borderRadius: "8px",
-                  transition: "background 0.2s ease"
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(239, 68, 68, 0.05)")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-              >
-                <Trash2 size={18} /> Delete Feedback
-              </button>
             </div>
           </div>
         </div>
