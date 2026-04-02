@@ -96,20 +96,29 @@ const Feedback: React.FC = () => {
               >
                 What would you like to talk about?
               </p>
-              <div className="category-grid">
+              <div className="category-grid" role="radiogroup" aria-labelledby="category-label">
+                <p id="category-label" style={{ display: "none" }}>Select a category</p>
                 {categories.map((cat) => (
-                  <div
+                  <label
                     key={cat.id}
                     className={`category-item ${formData.category === cat.id ? "active" : ""}`}
-                    onClick={() =>
-                      setFormData({ ...formData, category: cat.id })
-                    }
+                    htmlFor={`cat-${cat.id}`}
+                    style={{ cursor: "pointer" }}
                   >
+                    <input
+                      type="radio"
+                      id={`cat-${cat.id}`}
+                      name="category"
+                      value={cat.id}
+                      checked={formData.category === cat.id}
+                      onChange={() => setFormData({ ...formData, category: cat.id })}
+                      style={{ position: "absolute", opacity: 0, pointerEvents: "none" }}
+                    />
                     <cat.icon size={24} />
                     <div style={{ fontWeight: 500, fontSize: "0.9rem" }}>
                       {cat.label}
                     </div>
-                  </div>
+                  </label>
                 ))}
               </div>
               <button
@@ -136,15 +145,26 @@ const Feedback: React.FC = () => {
               >
                 Rate your experience in this category.
               </p>
-              <div className="rating-scale">
+              <div className="rating-scale" role="radiogroup" aria-labelledby="rating-label">
+                <p id="rating-label" style={{ display: "none" }}>Rate your experience</p>
                 {[1, 2, 3, 4, 5].map((num) => (
-                  <div
+                  <label
                     key={num}
                     className={`rating-dot ${formData.rating === num ? "active" : ""}`}
-                    onClick={() => setFormData({ ...formData, rating: num })}
+                    htmlFor={`rating-${num}`}
+                    style={{ cursor: "pointer" }}
                   >
+                    <input
+                      type="radio"
+                      id={`rating-${num}`}
+                      name="rating"
+                      value={num}
+                      checked={formData.rating === num}
+                      onChange={() => setFormData({ ...formData, rating: num })}
+                      style={{ position: "absolute", opacity: 0, pointerEvents: "none" }}
+                    />
                     {num}
-                  </div>
+                  </label>
                 ))}
               </div>
               <button
