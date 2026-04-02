@@ -37,7 +37,7 @@ const Feedback: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post("/rest/v1/feedback", formData);
+      await api.post("/api/feedback", formData);
       setSubmitted(true);
     } catch (error) {
       console.log(error);

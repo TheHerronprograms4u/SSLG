@@ -22,20 +22,13 @@ const Admin: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await api.get("/rest/v1/admins", {
-        params: {
-          username: `eq.${username}`,
-          password_hash: `eq.${password}`,
-          select: "*",
-        },
+      const res = await api.post("/api/admin/login", {
+        username,
+        password,
       });
 
-      if (res.data.length === 0) {
-        alert("Invalid credentials");
-        return;
-      }
-
-      localStorage.setItem("adminToken", username);
+      const { token } = res.data;
+      localStorage.setItem("adminToken", token);
       setIsLoggedIn(true);
       fetchDashboardData();
     } catch (error) {
@@ -46,35 +39,23 @@ const Admin: React.FC = () => {
   };
 
   const fetchDashboardData = async () => {
+    const token = localStorage.getItem("adminToken");
+    if (!token) return;
+
     try {
-      const responsesRes = await api.get("/rest/v1/feedback");
-      const data = responsesRes.data;
-      setResponses(data);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
 
-      const categoryMap: Record<
-        string,
-        { count: number; total_rating: number }
-      > = {};
-      data.forEach((item: any) => {
-        if (!categoryMap[item.category]) {
-          categoryMap[item.category] = { count: 0, total_rating: 0 };
-        }
-        categoryMap[item.category].count++;
-        categoryMap[item.category].total_rating += item.rating || 0;
-      });
+      const [statsRes, responsesRes] = await Promise.all([
+        api.get("/api/admin/stats", config),
+        api.get("/api/admin/responses", config),
+      ]);
 
-      const categoryDistribution = Object.entries(categoryMap).map(
-        ([category, val]) => ({
-          category,
-          count: val.count,
-          avg_rating: val.count > 0 ? val.total_rating / val.count : 0,
-        }),
-      );
-
-      setStats({
-        totalResponses: data.length,
-        categoryDistribution,
-      });
+      setStats(statsRes.data);
+      setResponses(responsesRes.data);
     } catch (error) {
       handleLogout();
     }
