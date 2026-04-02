@@ -1,14 +1,11 @@
-import { Client, Databases, Users } from 'node-appwrite';
+import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const client = new Client()
-    .setEndpoint(process.env.APPWRITE_ENDPOINT || 'https://cloud.appwrite.io/v1')
-    .setProject(process.env.APPWRITE_PROJECT_ID || '')
-    .setKey(process.env.APPWRITE_API_KEY || '');
+const supabaseUrl = process.env.SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_KEY || '';
 
-const databases = new Databases(client);
-const users = new Users(client);
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-export { databases, users, client };
+export default supabase;
