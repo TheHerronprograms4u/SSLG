@@ -114,6 +114,7 @@ const Admin: React.FC = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
+                autocomplete="username"
               />
             </div>
             <div style={{ marginBottom: "1.5rem" }}>
@@ -135,6 +136,7 @@ const Admin: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                autocomplete="current-password"
               />
             </div>
             <button

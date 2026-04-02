@@ -207,6 +207,7 @@ const Feedback: React.FC = () => {
                   setFormData({ ...formData, message: e.target.value })
                 }
                 style={{ marginBottom: "1.5rem", resize: "none" }}
+                autocomplete="off"
               />
 
               <div
@@ -257,6 +258,7 @@ const Feedback: React.FC = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, student_id: e.target.value })
                     }
+                    autocomplete="off"
                   />
                 </div>
               )}
