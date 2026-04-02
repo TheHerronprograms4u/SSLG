@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../api/supabase";
-import { LayoutDashboard, LogOut, MessageCircle, Clock } from "lucide-react";
+import { LayoutDashboard, LogOut, MessageCircle, Clock, X, Trash2 } from "lucide-react";
 
 const Admin: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -9,6 +9,7 @@ const Admin: React.FC = () => {
   const [stats, setStats] = useState<any>(null);
   const [responses, setResponses] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState<any | null>(null);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -71,6 +72,24 @@ const Admin: React.FC = () => {
       });
     } catch (error) {
       console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleDeleteFeedback = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this feedback?")) return;
+    
+    try {
+      const { error } = await supabase
+        .from('feedback')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      setSelectedFeedback(null);
+      fetchDashboardData();
+    } catch (error: any) {
+      alert(error.message || "Error deleting feedback");
     }
   };
 
@@ -250,7 +269,14 @@ const Admin: React.FC = () => {
 
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
         {responses.map((res) => (
-          <div key={res.id} className="card" style={{ padding: "1.5rem" }}>
+          <div 
+            key={res.id} 
+            className="card" 
+            style={{ padding: "1.5rem", cursor: "pointer", transition: "transform 0.2s ease" }}
+            onClick={() => setSelectedFeedback(res)}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-2px)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
+          >
             <div
               style={{
                 display: "flex",
@@ -289,7 +315,7 @@ const Admin: React.FC = () => {
                 <div>★ {res.rating}</div>
               </div>
             </div>
-            <p style={{ marginBottom: "1rem", color: "var(--text-primary)" }}>
+            <p style={{ marginBottom: "1rem", color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
               {res.message || (
                 <em style={{ color: "var(--text-secondary)" }}>
                   No message provided.
@@ -315,6 +341,132 @@ const Admin: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Enlarged Feedback Modal */}
+      {selectedFeedback && (
+        <div 
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: "1rem",
+            backdropFilter: "blur(4px)"
+          }}
+          onClick={() => setSelectedFeedback(null)}
+        >
+          <div 
+            className="card" 
+            style={{ 
+              width: "100%", 
+              maxWidth: "600px", 
+              maxHeight: "90vh", 
+              overflowY: "auto", 
+              position: "relative",
+              padding: "2.5rem"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button 
+              onClick={() => setSelectedFeedback(null)}
+              style={{
+                position: "absolute",
+                top: "1.5rem",
+                right: "1.5rem",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                color: "var(--text-secondary)"
+              }}
+            >
+              <X size={24} />
+            </button>
+
+            <div style={{ marginBottom: "2rem" }}>
+              <span
+                style={{
+                  padding: "6px 16px",
+                  borderRadius: "9999px",
+                  fontSize: "0.85rem",
+                  fontWeight: 600,
+                  backgroundColor: "rgba(216, 27, 96, 0.1)",
+                  color: "var(--accent-color)",
+                  textTransform: "capitalize",
+                  display: "inline-block",
+                  marginBottom: "1rem"
+                }}
+              >
+                {selectedFeedback.category}
+              </span>
+              
+              <div style={{ display: "flex", alignItems: "center", gap: "20px", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <Clock size={16} />
+                  {new Date(selectedFeedback.created_at).toLocaleString()}
+                </div>
+                <div style={{ color: "var(--gold-color)", fontWeight: 700, fontSize: "1.1rem" }}>
+                  Rating: {selectedFeedback.rating} / 5
+                </div>
+              </div>
+            </div>
+
+            <div style={{ 
+              padding: "1.5rem", 
+              backgroundColor: "var(--bg-color)", 
+              borderRadius: "12px", 
+              marginBottom: "2rem",
+              color: "white",
+              fontSize: "1.1rem",
+              lineHeight: "1.6",
+              whiteSpace: "pre-wrap"
+            }}>
+              {selectedFeedback.message || "No message provided."}
+            </div>
+
+            <div style={{ 
+              display: "flex", 
+              justifyContent: "space-between", 
+              alignItems: "center",
+              borderTop: "1px solid var(--border-color)",
+              paddingTop: "1.5rem"
+            }}>
+              <div style={{ fontSize: "0.9rem", color: "var(--text-primary)", fontWeight: 600 }}>
+                {selectedFeedback.is_anonymous
+                  ? "Anonymous Submission"
+                  : `Student ID: ${selectedFeedback.student_id || "Not provided"}`}
+              </div>
+              
+              <button 
+                onClick={() => handleDeleteFeedback(selectedFeedback.id)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  color: "#ef4444",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                  fontSize: "0.9rem",
+                  padding: "8px",
+                  borderRadius: "8px",
+                  transition: "background 0.2s ease"
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(239, 68, 68, 0.05)")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+              >
+                <Trash2 size={18} /> Delete Feedback
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
