@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import logo from '../assets/hero.png'; // Using hero.png as the placeholder for the logo
+import logo from '../assets/hero.jpg'; // Using the new hero.jpg logo
 
 const Home: React.FC = () => {
   return (
