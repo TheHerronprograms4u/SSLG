@@ -16,6 +16,8 @@
   height: auto;
   margin-bottom: 2rem;
   mix-blend-mode: multiply;
+  clip-path: circle(50% at 50% 50%);
+  filter: contrast(1.1);
 }
 
 * {
