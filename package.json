@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "install": "cd client && npm install",
-    "build": "cd client && npm run build && cd .. && mkdir public && cp -r client/dist/* public/"
+    "build": "cd client && npm run build && cd .. && rm -rf public && mkdir public && cp -r client/dist/* public/"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
