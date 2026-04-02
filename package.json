@@ -6,7 +6,7 @@
     "build": "cd client && npm run build && cd .. && mkdir public && cp -r client/dist/* public/"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.49.1",
+    "node-appwrite": "^15.0.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
