@@ -166,12 +166,19 @@ const Feedback: React.FC = () => {
           {step === 3 && (
             <div className="fade-in">
               <h2 style={{ marginBottom: "0.5rem" }}>Leave a message</h2>
-              <p
-                style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}
+              <label
+                htmlFor="message"
+                style={{
+                  display: "block",
+                  color: "var(--text-secondary)",
+                  marginBottom: "1rem",
+                }}
               >
                 Tell us more about your thoughts or suggestions.
-              </p>
+              </label>
               <textarea
+                id="message"
+                name="message"
                 className="textarea"
                 rows={6}
                 placeholder="Type your message here..."
@@ -193,6 +200,7 @@ const Feedback: React.FC = () => {
                 <input
                   type="checkbox"
                   id="anon"
+                  name="is_anonymous"
                   checked={formData.is_anonymous}
                   onChange={(e) =>
                     setFormData({ ...formData, is_anonymous: e.target.checked })
@@ -207,16 +215,30 @@ const Feedback: React.FC = () => {
               </div>
 
               {!formData.is_anonymous && (
-                <input
-                  type="text"
-                  className="input"
-                  placeholder="Student ID (Optional)"
-                  value={formData.student_id}
-                  onChange={(e) =>
-                    setFormData({ ...formData, student_id: e.target.value })
-                  }
-                  style={{ marginBottom: "2rem" }}
-                />
+                <div style={{ marginBottom: "2rem" }}>
+                  <label
+                    htmlFor="student_id"
+                    style={{
+                      display: "block",
+                      fontSize: "0.9rem",
+                      color: "var(--text-secondary)",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    Student ID (Optional)
+                  </label>
+                  <input
+                    id="student_id"
+                    name="student_id"
+                    type="text"
+                    className="input"
+                    placeholder="Enter your Student ID"
+                    value={formData.student_id}
+                    onChange={(e) =>
+                      setFormData({ ...formData, student_id: e.target.value })
+                    }
+                  />
+                </div>
               )}
 
               <button

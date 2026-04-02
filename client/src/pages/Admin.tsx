@@ -97,6 +97,7 @@ const Admin: React.FC = () => {
           <form onSubmit={handleLogin}>
             <div style={{ marginBottom: "1rem" }}>
               <label
+                htmlFor="username"
                 style={{
                   display: "block",
                   fontSize: "0.9rem",
@@ -106,6 +107,8 @@ const Admin: React.FC = () => {
                 Username
               </label>
               <input
+                id="username"
+                name="username"
                 type="text"
                 className="input"
                 value={username}
@@ -115,6 +118,7 @@ const Admin: React.FC = () => {
             </div>
             <div style={{ marginBottom: "1.5rem" }}>
               <label
+                htmlFor="password"
                 style={{
                   display: "block",
                   fontSize: "0.9rem",
@@ -124,6 +128,8 @@ const Admin: React.FC = () => {
                 Password
               </label>
               <input
+                id="password"
+                name="password"
                 type="password"
                 className="input"
                 value={password}
