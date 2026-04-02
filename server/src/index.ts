@@ -37,14 +37,14 @@ app.post('/api/feedback', async (req: Request, res: Response) => {
   }
 
   try {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('feedback')
       .insert([
         { 
           category, 
-          rating: Number(rating), 
-          message: message || '', 
-          is_anonymous: Boolean(is_anonymous), 
+          rating, 
+          message, 
+          is_anonymous: is_anonymous ? true : false, 
           student_id: student_id || null 
         }
       ]);
@@ -52,7 +52,7 @@ app.post('/api/feedback', async (req: Request, res: Response) => {
     if (error) throw error;
     res.status(201).json({ message: 'Feedback submitted successfully.' });
   } catch (error) {
-    console.error('Supabase Error:', error);
+    console.error(error);
     res.status(500).json({ error: 'Internal server error.' });
   }
 });
@@ -74,7 +74,6 @@ app.post('/api/admin/login', async (req: Request, res: Response) => {
     const token = jwt.sign({ id: admin.id, username: admin.username }, JWT_SECRET, { expiresIn: '8h' });
     res.json({ token });
   } catch (error) {
-    console.error('Login Error:', error);
     res.status(500).json({ error: 'Login failed.' });
   }
 });
@@ -82,18 +81,21 @@ app.post('/api/admin/login', async (req: Request, res: Response) => {
 // Admin Protected Routes
 app.get('/api/admin/stats', authenticateToken, async (req: any, res: Response) => {
   try {
+    // Total count
     const { count: totalResponses, error: countError } = await supabase
       .from('feedback')
       .select('*', { count: 'exact', head: true });
     
     if (countError) throw countError;
 
+    // Category distribution and averages
     const { data: feedbackData, error: dataError } = await supabase
       .from('feedback')
       .select('category, rating');
     
     if (dataError) throw dataError;
 
+    // Grouping manually as Supabase doesn't support complex aggregations in one simple call
     const categories = ['academics', 'facilities', 'events', 'leadership', 'welfare'];
     const categoryDistribution = categories.map(cat => {
       const catFeedback = feedbackData?.filter(f => f.category === cat) || [];
@@ -107,7 +109,7 @@ app.get('/api/admin/stats', authenticateToken, async (req: any, res: Response) =
     
     res.json({ totalResponses, categoryDistribution });
   } catch (error) {
-    console.error('Stats Error:', error);
+    console.error(error);
     res.status(500).json({ error: 'Failed to fetch stats.' });
   }
 });
@@ -122,7 +124,6 @@ app.get('/api/admin/responses', authenticateToken, async (req: any, res: Respons
     if (error) throw error;
     res.json(responses);
   } catch (error) {
-    console.error('Responses Error:', error);
     res.status(500).json({ error: 'Failed to fetch responses.' });
   }
 });
