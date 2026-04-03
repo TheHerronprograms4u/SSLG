@@ -8,7 +8,7 @@ const Home: React.FC = () => {
     <div className="container fade-in">
       <div style={{ textAlign: 'center' }}>
         <img src={logo} alt="SSLG Logo" className="logo-img" style={{ width: '180px', marginBottom: '1.5rem', mixBlendMode: 'multiply' }} />
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '1rem', letterSpacing: '-0.025em', color: 'var(--text-primary)' }}>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '1rem', letterSpacing: '-0.025em', color: 'white' }}>
           Your voice matters.
         </h1>
         <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem', lineHeight: '1.6' }}>
