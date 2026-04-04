@@ -67,8 +67,8 @@ const Feedback: React.FC = () => {
           color="#22c55e"
           style={{ margin: "0 auto 2rem" }}
         />
-        <h1 style={{ marginBottom: "1rem" }}>Message Received.</h1>
-        <p style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}>
+        <h1 style={{ marginBottom: "1rem", color: "white" }}>Message Received.</h1>
+        <p style={{ color: "rgba(255, 255, 255, 0.9)", marginBottom: "2rem" }}>
           Thank you for sharing your thoughts. Your feedback helps us make a
           difference.
         </p>
@@ -89,7 +89,7 @@ const Feedback: React.FC = () => {
           gap: "4px",
           background: "none",
           border: "none",
-          color: "var(--text-secondary)",
+          color: "white",
           cursor: "pointer",
           marginBottom: "2rem",
           padding: 0,
@@ -98,16 +98,37 @@ const Feedback: React.FC = () => {
         <ChevronLeft size={20} /> Back
       </button>
 
+      {step === 1 && (
+        <div className="fade-in" style={{ textAlign: "center", marginBottom: "2rem" }}>
+          <h2 style={{ color: "white", fontSize: "2rem", marginBottom: "0.5rem" }}>Select a category</h2>
+          <p style={{ color: "rgba(255, 255, 255, 0.9)" }}>
+            What would you like to talk about?
+          </p>
+        </div>
+      )}
+
+      {step === 2 && (
+        <div className="fade-in" style={{ textAlign: "center", marginBottom: "2rem" }}>
+          <h2 style={{ color: "white", fontSize: "2rem", marginBottom: "0.5rem" }}>How are we doing?</h2>
+          <p style={{ color: "rgba(255, 255, 255, 0.9)" }}>
+            Rate your experience in this category.
+          </p>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div className="fade-in" style={{ textAlign: "center", marginBottom: "2rem" }}>
+          <h2 style={{ color: "white", fontSize: "2rem", marginBottom: "0.5rem" }}>Leave a message</h2>
+          <p style={{ color: "rgba(255, 255, 255, 0.9)" }}>
+            Tell us more about your thoughts or suggestions.
+          </p>
+        </div>
+      )}
+
       <div className="card">
         <form onSubmit={handleSubmit}>
           {step === 1 && (
             <div className="fade-in">
-              <h2 style={{ marginBottom: "0.5rem" }}>Select a category</h2>
-              <p
-                style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}
-              >
-                What would you like to talk about?
-              </p>
               <div className="category-grid" role="radiogroup" aria-labelledby="category-label">
                 <p id="category-label" style={{ display: "none" }}>Select a category</p>
                 {categories.map((cat) => (
@@ -127,7 +148,7 @@ const Feedback: React.FC = () => {
                       style={{ position: "absolute", opacity: 0, pointerEvents: "none" }}
                     />
                     <cat.icon size={24} />
-                    <div style={{ fontWeight: 500, fontSize: "0.9rem" }}>
+                    <div style={{ fontWeight: 600, fontSize: "0.95rem", color: "white", marginTop: "0.5rem" }}>
                       {cat.label}
                     </div>
                   </label>
@@ -142,6 +163,7 @@ const Feedback: React.FC = () => {
                   width: "100%",
                   justifyContent: "center",
                   opacity: formData.category ? 1 : 0.5,
+                  color: "white"
                 }}
               >
                 Next
@@ -151,12 +173,6 @@ const Feedback: React.FC = () => {
 
           {step === 2 && (
             <div className="fade-in">
-              <h2 style={{ marginBottom: "0.5rem" }}>How are we doing?</h2>
-              <p
-                style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}
-              >
-                Rate your experience in this category.
-              </p>
               <div className="rating-scale" role="radiogroup" aria-labelledby="rating-label">
                 <p id="rating-label" style={{ display: "none" }}>Rate your experience</p>
                 {[1, 2, 3, 4, 5].map((num) => (
@@ -188,6 +204,7 @@ const Feedback: React.FC = () => {
                   width: "100%",
                   justifyContent: "center",
                   opacity: formData.rating ? 1 : 0.5,
+                  color: "white"
                 }}
               >
                 Next
@@ -197,17 +214,6 @@ const Feedback: React.FC = () => {
 
           {step === 3 && (
             <div className="fade-in">
-              <h2 style={{ marginBottom: "0.5rem" }}>Leave a message</h2>
-              <label
-                htmlFor="message"
-                style={{
-                  display: "block",
-                  color: "var(--text-secondary)",
-                  marginBottom: "1rem",
-                }}
-              >
-                Tell us more about your thoughts or suggestions.
-              </label>
               <textarea
                 id="message"
                 name="message"
@@ -241,7 +247,7 @@ const Feedback: React.FC = () => {
                 />
                 <label
                   htmlFor="anon"
-                  style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}
+                  style={{ fontSize: "0.9rem", color: "white" }}
                 >
                   Submit anonymously
                 </label>
@@ -254,7 +260,7 @@ const Feedback: React.FC = () => {
                     style={{
                       display: "block",
                       fontSize: "0.9rem",
-                      color: "var(--text-secondary)",
+                      color: "white",
                       marginBottom: "0.5rem",
                     }}
                   >
@@ -279,7 +285,7 @@ const Feedback: React.FC = () => {
                 type="submit"
                 disabled={loading}
                 className="button"
-                style={{ width: "100%", justifyContent: "center" }}
+                style={{ width: "100%", justifyContent: "center", color: "white" }}
               >
                 {loading ? "Submitting..." : "Send Feedback"} <Send size={18} />
               </button>
