@@ -148,7 +148,7 @@ const Feedback: React.FC = () => {
                       style={{ position: "absolute", opacity: 0, pointerEvents: "none" }}
                     />
                     <cat.icon size={24} />
-                    <div style={{ fontWeight: 600, fontSize: "0.95rem", color: "white", marginTop: "0.5rem" }}>
+                    <div style={{ fontWeight: 600, fontSize: "0.95rem", color: "var(--accent-color)", marginTop: "0.5rem" }}>
                       {cat.label}
                     </div>
                   </label>
@@ -163,7 +163,6 @@ const Feedback: React.FC = () => {
                   width: "100%",
                   justifyContent: "center",
                   opacity: formData.category ? 1 : 0.5,
-                  color: "white"
                 }}
               >
                 Next
@@ -204,7 +203,6 @@ const Feedback: React.FC = () => {
                   width: "100%",
                   justifyContent: "center",
                   opacity: formData.rating ? 1 : 0.5,
-                  color: "white"
                 }}
               >
                 Next
@@ -247,7 +245,7 @@ const Feedback: React.FC = () => {
                 />
                 <label
                   htmlFor="anon"
-                  style={{ fontSize: "0.9rem", color: "white" }}
+                  style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}
                 >
                   Submit anonymously
                 </label>
@@ -260,7 +258,7 @@ const Feedback: React.FC = () => {
                     style={{
                       display: "block",
                       fontSize: "0.9rem",
-                      color: "white",
+                      color: "var(--text-secondary)",
                       marginBottom: "0.5rem",
                     }}
                   >
@@ -285,7 +283,7 @@ const Feedback: React.FC = () => {
                 type="submit"
                 disabled={loading}
                 className="button"
-                style={{ width: "100%", justifyContent: "center", color: "white" }}
+                style={{ width: "100%", justifyContent: "center" }}
               >
                 {loading ? "Submitting..." : "Send Feedback"} <Send size={18} />
               </button>
