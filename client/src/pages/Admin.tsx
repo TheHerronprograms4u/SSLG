@@ -162,8 +162,8 @@ const Admin: React.FC = () => {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <LayoutDashboard color="var(--accent-color)" />
-          <h1 style={{ fontSize: "1.5rem" }}>SSLG Dashboard</h1>
+          <LayoutDashboard color="white" />
+          <h1 style={{ fontSize: "1.5rem", color: "white" }}>SSLG Dashboard</h1>
         </div>
         <button
           onClick={handleLogout}
@@ -197,7 +197,7 @@ const Admin: React.FC = () => {
             >
               Total Responses
             </div>
-            <div style={{ fontSize: "2rem", fontWeight: 800 }}>
+            <div style={{ fontSize: "2rem", fontWeight: 800, color: "#eb8daf" }}>
               {stats.totalResponses}
             </div>
           </div>
@@ -224,11 +224,11 @@ const Admin: React.FC = () => {
                   alignItems: "flex-end",
                 }}
               >
-                <div style={{ fontSize: "1.5rem", fontWeight: 700 }}>
+                <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "#eb8daf" }}>
                   {item.count}
                 </div>
                 <div
-                  style={{ fontSize: "0.8rem", color: "var(--accent-color)" }}
+                  style={{ fontSize: "0.8rem", color: "#eb8daf" }}
                 >
                   ★ {item.avg_rating.toFixed(1)}
                 </div>
@@ -244,9 +244,10 @@ const Admin: React.FC = () => {
           display: "flex",
           alignItems: "center",
           gap: "8px",
+          color: "white"
         }}
       >
-        <MessageCircle size={24} /> Recent Feedback
+        <MessageCircle size={24} color="white" /> Recent Feedback
       </h2>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -294,7 +295,7 @@ const Admin: React.FC = () => {
                   <Clock size={14} />{" "}
                   {new Date(res.created_at).toLocaleDateString()}
                 </div>
-                <div>★ {res.rating}</div>
+                <div style={{ color: "#eb8daf", fontWeight: 700 }}>★ {res.rating}</div>
               </div>
             </div>
             <p style={{ marginBottom: "1rem", color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
