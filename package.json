@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "cd client && npm run dev",
     "install": "cd client && npm install",
-    "build": "cd client && npm run build"
+    "build": "cd client && npm run build && npx cpy-cli client/dist/* . --dot"
   },
   "dependencies": {
     "lucide-react": "^1.7.0",
