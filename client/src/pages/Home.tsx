@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import logo from '../assets/hero.jpg'; // Using the new hero.jpg logo
+import logo from '../assets/hero.png'; // Using the new transparent hero.png logo
 
 const Home: React.FC = () => {
   return (
     <div className="container fade-in">
       <div style={{ textAlign: 'center' }}>
-        <img src={logo} alt="SSLG Logo" className="logo-img" style={{ width: '180px', marginBottom: '1.5rem', mixBlendMode: 'multiply' }} />
+        <img src={logo} alt="SSLG Logo" className="logo-img" style={{ width: '180px', marginBottom: '1.5rem' }} />
         <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '1rem', letterSpacing: '-0.025em', color: 'white' }}>
           Your voice matters.
         </h1>
