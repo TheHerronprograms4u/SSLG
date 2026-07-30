@@ -26,7 +26,7 @@ export const ContactTab: React.FC<ContactTabProps> = ({ onShowToast }) => {
     },
     {
       q: 'Where is the SSLG Head Office located on campus?',
-      a: 'The SSLG Leadership Office is located at Building A, 2nd Floor, Gubat National High School Main Campus.'
+      a: 'Beside the track & soccer field, Gubat National High School, Gubat, Sorsogon, Philippines.'
     }
   ];
 
@@ -125,7 +125,7 @@ export const ContactTab: React.FC<ContactTabProps> = ({ onShowToast }) => {
               <MapPin size={18} className="info-icon" />
               <div>
                 <strong>SSLG Secretariat Office</strong>
-                <p>Gubat National High School, Sorsogon, 4710</p>
+                <p>Beside the track & soccer field, Gubat National High School, Gubat, Sorsogon, Philippines</p>
               </div>
             </div>
 
