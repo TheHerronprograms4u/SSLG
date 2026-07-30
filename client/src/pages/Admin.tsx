@@ -162,11 +162,12 @@ export const Admin: React.FC = () => {
 
   if (!isLoggedIn) {
     return (
-      <div className="container fade-in" style={{ padding: "4rem 1rem" }}>
+      <div className="sslg-app-wrapper" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem 1rem" }}>
         <div
-          className="card"
+          className="card fade-in"
           style={{
             maxWidth: "420px",
+            width: "100%",
             margin: "0 auto",
             padding: "2.5rem",
             background: "#ffffff",
@@ -252,7 +253,8 @@ export const Admin: React.FC = () => {
   }
 
   return (
-    <div className="container fade-in" style={{ maxWidth: "1140px", padding: "2rem 1rem" }}>
+    <div className="sslg-app-wrapper" style={{ minHeight: "100vh", padding: "2rem 1rem" }}>
+      <div className="container fade-in" style={{ maxWidth: "1140px", margin: "0 auto" }}>
       {/* Header */}
       <div
         style={{
@@ -803,6 +805,7 @@ export const Admin: React.FC = () => {
         </div>
       )}
     </div>
+  </div>
   );
 };
 
