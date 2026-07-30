@@ -241,6 +241,18 @@ export async function dbSubmitFeedback(feedback: FeedbackSubmission): Promise<vo
   }
 }
 
+export async function dbDeleteFeedback(id: string): Promise<void> {
+  const cached = await dbGetFeedback();
+  const updated = cached.filter((f) => f.id !== id);
+  localStorage.setItem(STORAGE_KEYS.FEEDBACK, JSON.stringify(updated));
+
+  try {
+    await supabase.from('feedback').delete().eq('id', id);
+  } catch (err) {
+    console.warn('Supabase feedback delete error:', err);
+  }
+}
+
 // -------------------------------------------------------------
 // TEAM
 // -------------------------------------------------------------
