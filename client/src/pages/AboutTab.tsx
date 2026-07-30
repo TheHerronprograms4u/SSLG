@@ -3,10 +3,10 @@ import { Target, Award, Shield, Zap, Compass } from 'lucide-react';
 
 export const AboutTab: React.FC = () => {
   const stats = [
-    { label: 'Active Projects', value: '24+', change: '+12 this year' },
-    { label: 'Student Body Served', value: '3,200+', change: '100% campus reach' },
-    { label: 'Publications & Papers', value: '18', change: 'Indexed repositories' },
-    { label: 'Community Initiatives', value: '45+', change: 'Active student forums' },
+    { label: 'Active Projects', value: '0', change: '0 this year' },
+    { label: 'Student Body Served', value: '0', change: '0% campus reach' },
+    { label: 'Publications & Papers', value: '0', change: '0 indexed' },
+    { label: 'Community Initiatives', value: '0', change: '0 active forums' },
   ];
 
   const pillars = [
@@ -30,12 +30,6 @@ export const AboutTab: React.FC = () => {
       title: 'Transparent Governance',
       desc: 'Maintaining open project progress tracking, audited fiscal accountability, and responsive leadership.'
     }
-  ];
-
-  const milestones = [
-    { year: '2026', title: 'Launch of AI Student Hub & Eco-Solar Pods', desc: 'Deployed full smart campus assistant and off-grid solar study spaces.' },
-    { year: '2025', title: 'Digital Feedback Charter Adopted', desc: 'Formalized real-time feedback resolution protocols with the school administration.' },
-    { year: '2024', title: 'Establishment of SSLG Research Division', desc: 'Integrated student tech leads into institutional development teams.' }
   ];
 
   return (
@@ -70,21 +64,6 @@ export const AboutTab: React.FC = () => {
               </div>
               <h4>{pil.title}</h4>
               <p>{pil.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="about-timeline-section">
-        <h3 className="section-title-centered">Institutional Roadmap & History</h3>
-        <div className="timeline-wrapper">
-          {milestones.map((m, idx) => (
-            <div key={idx} className="timeline-node">
-              <div className="node-year">{m.year}</div>
-              <div className="node-content">
-                <h4>{m.title}</h4>
-                <p>{m.desc}</p>
-              </div>
             </div>
           ))}
         </div>
