@@ -9,7 +9,8 @@ import {
   Image as ImageIcon,
   Lock,
   Layers,
-  RotateCcw
+  RotateCcw,
+  MessageSquare
 } from 'lucide-react';
 
 interface AdminPublishingModuleProps {
@@ -162,12 +163,19 @@ export const AdminPublishingModule: React.FC<AdminPublishingModuleProps> = ({
           <h2>Project Publishing & Research Management Module</h2>
         </div>
         <div className="admin-header-buttons">
+          <a
+            href="/admin"
+            className="admin-secondary-btn"
+            style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+          >
+            <MessageSquare size={15} /> Feedback Dashboard
+          </a>
           <button
             type="button"
             onClick={() => setIsExpanded(!isExpanded)}
             className="admin-secondary-btn"
           >
-            {isExpanded ? 'Collapse Publishing Form' : 'Expand Publishing Form'}
+            {isExpanded ? 'Collapse Form' : 'Expand Form'}
           </button>
           <button type="button" onClick={onLogout} className="admin-danger-btn">
             Logout Admin

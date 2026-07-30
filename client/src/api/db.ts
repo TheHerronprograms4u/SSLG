@@ -180,9 +180,14 @@ export async function dbDeleteGalleryItem(id: string): Promise<void> {
 export async function dbGetFeedback(): Promise<FeedbackSubmission[]> {
   try {
     const { data, error } = await supabase.from('feedback').select('*').order('created_at', { ascending: false });
-    if (!error && data && data.length > 0) {
-      localStorage.setItem(STORAGE_KEYS.FEEDBACK, JSON.stringify(data));
+    if (!error && data) {
+      if (data.length > 0) {
+        localStorage.setItem(STORAGE_KEYS.FEEDBACK, JSON.stringify(data));
+      }
       return data as FeedbackSubmission[];
+    }
+    if (error) {
+      console.warn('Supabase feedback fetch error:', error.message);
     }
   } catch (err) {
     console.warn('Supabase feedback fetch error, falling back to local cache:', err);
@@ -204,8 +209,23 @@ export async function dbSubmitFeedback(feedback: FeedbackSubmission): Promise<vo
   const updated = [feedback, ...cached];
   localStorage.setItem(STORAGE_KEYS.FEEDBACK, JSON.stringify(updated));
 
+  const payload: any = {
+    id: feedback.id,
+    category: feedback.category,
+    rating: feedback.rating,
+    message: feedback.message,
+    is_anonymous: feedback.is_anonymous,
+    created_at: feedback.created_at || new Date().toISOString()
+  };
+  if (feedback.student_id) {
+    payload.student_id = feedback.student_id;
+  }
+
   try {
-    await supabase.from('feedback').insert(feedback);
+    const { error } = await supabase.from('feedback').insert([payload]);
+    if (error) {
+      console.warn('Supabase feedback insert error:', error.message);
+    }
   } catch (err) {
     console.warn('Supabase feedback insert error:', err);
   }
