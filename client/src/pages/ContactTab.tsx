@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, MapPin, Clock, Phone, Send, HelpCircle, CheckCircle2 } from 'lucide-react';
+import { Mail, MapPin, Clock, Send, HelpCircle, CheckCircle2 } from 'lucide-react';
 
 interface ContactTabProps {
   onShowToast: (msg: string) => void;
@@ -142,14 +142,6 @@ export const ContactTab: React.FC<ContactTabProps> = ({ onShowToast }) => {
               <div>
                 <strong>Official Email</strong>
                 <p>sslg.gubatnhs@gmail.com</p>
-              </div>
-            </div>
-
-            <div className="info-row">
-              <Phone size={18} className="info-icon" />
-              <div>
-                <strong>Campus Telephone</strong>
-                <p>+63 (056) 311-2026</p>
               </div>
             </div>
           </div>
