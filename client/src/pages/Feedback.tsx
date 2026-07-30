@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../api/supabase";
+import { dbSubmitFeedback } from "../api/db";
 import {
   BookOpen,
   Building2,
@@ -37,19 +37,15 @@ const Feedback: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { error } = await supabase
-        .from('feedback')
-        .insert([
-          { 
-            category: formData.category, 
-            rating: formData.rating, 
-            message: formData.message, 
-            is_anonymous: formData.is_anonymous, 
-            student_id: formData.is_anonymous ? null : formData.student_id 
-          }
-        ]);
-
-      if (error) throw error;
+      await dbSubmitFeedback({
+        id: 'fb-' + Date.now(),
+        category: formData.category,
+        rating: formData.rating,
+        message: formData.message,
+        is_anonymous: formData.is_anonymous,
+        student_id: formData.is_anonymous ? undefined : formData.student_id,
+        created_at: new Date().toISOString(),
+      });
       setSubmitted(true);
     } catch (error) {
       console.log(error);

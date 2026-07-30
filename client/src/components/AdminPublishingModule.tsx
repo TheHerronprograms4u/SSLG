@@ -43,7 +43,7 @@ export const AdminPublishingModule: React.FC<AdminPublishingModuleProps> = ({
   const [fullDescription, setFullDescription] = useState('');
   const [category, setCategory] = useState<Project['category']>('AI & Learning');
   const [status, setStatus] = useState<Project['status']>('Active');
-  const [authors, setAuthors] = useState('Alexis Vance, Mark Rivers');
+  const [authors, setAuthors] = useState('Gubat NHS SSLG');
   const [organization, setOrganization] = useState('Gubat NHS SSLG Innovation Hub');
   const [datePublished, setDatePublished] = useState(new Date().toISOString().split('T')[0]);
   const [coverImage, setCoverImage] = useState('https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80');

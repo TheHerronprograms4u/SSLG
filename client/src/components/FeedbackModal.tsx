@@ -11,7 +11,7 @@ import {
   Send,
   MessageSquare
 } from 'lucide-react';
-import { supabase } from '../api/supabase';
+import { dbSubmitFeedback } from '../api/db';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -45,15 +45,15 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, o
     e.preventDefault();
     setLoading(true);
     try {
-      await supabase.from('feedback').insert([
-        {
-          category: formData.category,
-          rating: formData.rating,
-          message: formData.message,
-          is_anonymous: formData.is_anonymous,
-          student_id: formData.is_anonymous ? null : formData.student_id,
-        },
-      ]);
+      await dbSubmitFeedback({
+        id: 'fb-' + Date.now(),
+        category: formData.category,
+        rating: formData.rating,
+        message: formData.message,
+        is_anonymous: formData.is_anonymous,
+        student_id: formData.is_anonymous ? undefined : formData.student_id,
+        created_at: new Date().toISOString(),
+      });
     } catch (err) {
       console.log('Using local fallback for feedback store:', err);
     } finally {

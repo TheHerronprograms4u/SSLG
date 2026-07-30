@@ -141,7 +141,7 @@ export const ContactTab: React.FC<ContactTabProps> = ({ onShowToast }) => {
               <Mail size={18} className="info-icon" />
               <div>
                 <strong>Official Email</strong>
-                <p>contact@sslg.gov.ph</p>
+                <p>sslg.gubatnhs@gmail.com</p>
               </div>
             </div>
 

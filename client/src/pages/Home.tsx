@@ -16,13 +16,21 @@ import { PublicationsTab } from './PublicationsTab';
 import { TeamTab } from './TeamTab';
 import { ContactTab } from './ContactTab';
 
-import type { Project } from '../types';
+import type { Project, Publication, GalleryItem, TeamMember } from '../types';
 import {
   INITIAL_PROJECTS,
   INITIAL_PUBLICATIONS,
   INITIAL_TEAM,
   INITIAL_GALLERY
 } from '../data/mockData';
+import {
+  dbGetProjects,
+  dbSaveProject,
+  dbDeleteProject,
+  dbGetPublications,
+  dbGetGallery,
+  dbGetTeam
+} from '../api/db';
 
 import { SlidersHorizontal, Sparkles, Layers } from 'lucide-react';
 
@@ -34,21 +42,27 @@ export const Home: React.FC = () => {
     return localStorage.getItem('sslg_admin_auth') === 'true';
   });
 
-  const [projects, setProjects] = useState<Project[]>(() => {
-    const saved = localStorage.getItem('sslg_projects');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return INITIAL_PROJECTS;
-  });
+  const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
+  const [publications, setPublications] = useState<Publication[]>(INITIAL_PUBLICATIONS);
+  const [gallery, setGallery] = useState<GalleryItem[]>(INITIAL_GALLERY);
+  const [team, setTeam] = useState<TeamMember[]>(INITIAL_TEAM);
 
   useEffect(() => {
-    localStorage.setItem('sslg_projects', JSON.stringify(projects));
-  }, [projects]);
+    async function initDatabaseData() {
+      const dbProjs = await dbGetProjects();
+      if (dbProjs && dbProjs.length > 0) setProjects(dbProjs);
+
+      const dbPubs = await dbGetPublications();
+      if (dbPubs && dbPubs.length > 0) setPublications(dbPubs);
+
+      const dbGal = await dbGetGallery();
+      if (dbGal && dbGal.length > 0) setGallery(dbGal);
+
+      const dbTm = await dbGetTeam();
+      if (dbTm && dbTm.length > 0) setTeam(dbTm);
+    }
+    initDatabaseData();
+  }, []);
 
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [sortBy, setSortBy] = useState<'latest' | 'popular'>('latest');
@@ -69,25 +83,30 @@ export const Home: React.FC = () => {
     } else {
       setIsAdmin(true);
       localStorage.setItem('sslg_admin_auth', 'true');
-      showToast('Logged in as Administrator (Demo Mode).');
+      showToast('Logged in as Administrator.');
     }
   };
 
-  const handleAddProject = (newProj: Project) => {
+  const handleAddProject = async (newProj: Project) => {
     setProjects([newProj, ...projects]);
+    await dbSaveProject(newProj);
   };
 
-  const handleDeleteProject = (id: string) => {
+  const handleDeleteProject = async (id: string) => {
     setProjects(projects.filter((p) => p.id !== id));
+    await dbDeleteProject(id);
   };
 
-  const handleLikeProject = (id: string, e: React.MouseEvent) => {
+  const handleLikeProject = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setProjects(
-      projects.map((p) =>
-        p.id === id ? { ...p, likes: p.likes + 1 } : p
-      )
+    const updated = projects.map((p) =>
+      p.id === id ? { ...p, likes: p.likes + 1 } : p
     );
+    setProjects(updated);
+    const target = updated.find((p) => p.id === id);
+    if (target) {
+      await dbSaveProject(target);
+    }
     showToast('Applauded project initiative!');
   };
 
@@ -214,21 +233,21 @@ export const Home: React.FC = () => {
 
           {activeTab === 'gallery' && (
             <GalleryTab
-              galleryItems={INITIAL_GALLERY}
+              galleryItems={gallery}
               onOpenLightbox={(url) => setLightboxImg(url)}
             />
           )}
 
           {activeTab === 'publications' && (
             <PublicationsTab
-              publications={INITIAL_PUBLICATIONS}
+              publications={publications}
               onShowToast={showToast}
             />
           )}
 
           {activeTab === 'team' && (
             <TeamTab
-              teamMembers={INITIAL_TEAM}
+              teamMembers={team}
               onShowToast={showToast}
             />
           )}
@@ -297,8 +316,8 @@ export const Home: React.FC = () => {
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
         projects={projects}
-        publications={INITIAL_PUBLICATIONS}
-        team={INITIAL_TEAM}
+        publications={publications}
+        team={team}
         onSelectProject={setSelectedProject}
       />
 

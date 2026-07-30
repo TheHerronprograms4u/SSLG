@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../api/supabase";
+import { dbGetFeedback } from "../api/db";
 import { LayoutDashboard, LogOut, MessageCircle, Clock, X } from "lucide-react";
 
 const Admin: React.FC = () => {
@@ -44,23 +45,16 @@ const Admin: React.FC = () => {
 
   const fetchDashboardData = async () => {
     try {
-      // Fetch Responses
-      const { data: feedbackData, error: feedbackError } = await supabase
-        .from('feedback')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (feedbackError) throw feedbackError;
-      
+      const feedbackData = await dbGetFeedback();
       setResponses(feedbackData || []);
 
       // Calculate Stats
       const categories = ['academics', 'facilities', 'events', 'leadership', 'welfare'];
       const categoryDistribution = categories.map(cat => {
-        const catFeedback = feedbackData?.filter(f => f.category === cat) || [];
+        const catFeedback = feedbackData?.filter((f: any) => f.category === cat) || [];
         const count = catFeedback.length;
         const avg_rating = count > 0 
-          ? catFeedback.reduce((sum, f) => sum + f.rating, 0) / count 
+          ? catFeedback.reduce((sum: number, f: any) => sum + f.rating, 0) / count 
           : 0;
         
         return { category: cat, count, avg_rating };

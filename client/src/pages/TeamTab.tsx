@@ -87,6 +87,14 @@ export const TeamTab: React.FC<TeamTabProps> = ({ teamMembers, onShowToast }) =>
           </div>
         ))}
       </div>
+
+      {filteredTeam.length === 0 && (
+        <div style={{ textAlign: 'center', padding: '3rem 1.5rem', background: '#ffffff', borderRadius: '16px', border: '1px solid #fce4ec', marginTop: '1.5rem' }}>
+          <Users size={36} color="var(--accent-primary)" style={{ marginBottom: '0.75rem' }} />
+          <h3 style={{ fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '0.25rem' }}>No team members currently listed</h3>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Official council team rosters will be published by the SSLG Executive Office.</p>
+        </div>
+      )}
     </div>
   );
 };

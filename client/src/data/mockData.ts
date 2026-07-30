@@ -220,52 +220,7 @@ export const INITIAL_PUBLICATIONS: Publication[] = [
   }
 ];
 
-export const INITIAL_TEAM: TeamMember[] = [
-  {
-    id: 'tm-1',
-    name: 'Alexis Vance',
-    role: 'SSLG President & Head Researcher',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
-    bio: 'Leading student government initiatives with a focus on digital innovation, academic empowerment, and transparent campus representation.',
-    department: 'Executive Board',
-    email: 'president@sslg.gov.ph',
-    socials: { twitter: 'https://twitter.com', linkedin: 'https://linkedin.com', github: 'https://github.com' },
-    projectsCount: 8
-  },
-  {
-    id: 'tm-2',
-    name: 'Mark Rivers, M.Sc.',
-    role: 'Vice President & Tech Lead',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
-    bio: 'Specializes in full-stack architecture, AI system integration, and student portal development.',
-    department: 'Tech & Innovation',
-    email: 'tech@sslg.gov.ph',
-    socials: { github: 'https://github.com', linkedin: 'https://linkedin.com' },
-    projectsCount: 6
-  },
-  {
-    id: 'tm-3',
-    name: 'Elena Rostova',
-    role: 'Academic & Research Director',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80',
-    bio: 'Oversees student academic welfare, research symposiums, and peer tutoring networks across all grade levels.',
-    department: 'Academic Affairs',
-    email: 'academics@sslg.gov.ph',
-    socials: { linkedin: 'https://linkedin.com' },
-    projectsCount: 5
-  },
-  {
-    id: 'tm-4',
-    name: 'Engr. Carlos Mendoza',
-    role: 'Faculty Advisor & Innovation Officer',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
-    bio: 'Guiding SSLG project teams in renewable energy installations, IoT prototyping, and engineering best practices.',
-    department: 'Research & Dev',
-    email: 'advisor@sslg.gov.ph',
-    socials: { linkedin: 'https://linkedin.com', twitter: 'https://twitter.com' },
-    projectsCount: 12
-  }
-];
+export const INITIAL_TEAM: TeamMember[] = [];
 
 export const INITIAL_GALLERY: GalleryItem[] = [
   {

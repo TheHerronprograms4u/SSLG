@@ -7,7 +7,7 @@ import {
   Mail,
   Award
 } from 'lucide-react';
-import { TwitterIcon, GithubIcon, LinkedinIcon } from './SocialIcons';
+
 
 interface HeroHeaderProps {
   onContactClick?: () => void;
@@ -56,7 +56,16 @@ export const HeroHeader: React.FC<HeroHeaderProps> = ({ onContactClick }) => {
             </span>
           </div>
 
-          <p className="hero-handle">@sslg_official • Smart Systems & Learning Group</p>
+          <p className="hero-handle">
+            <a
+              href="https://www.facebook.com/GubatNHS.SSLG"
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: 'inherit', textDecoration: 'none' }}
+            >
+              https://www.facebook.com/GubatNHS.SSLG
+            </a>
+          </p>
 
           <p className="hero-bio">
             Empowering student voices, pioneering academic & technological innovations, and advancing data-driven campus governance across secondary education.
@@ -67,24 +76,18 @@ export const HeroHeader: React.FC<HeroHeaderProps> = ({ onContactClick }) => {
             <span className="hero-meta-item">
               <MapPin size={15} /> Gubat, Sorsogon, Philippines
             </span>
+            <a href="mailto:sslg.gubatnhs@gmail.com" className="hero-meta-item" style={{ color: 'inherit', textDecoration: 'none' }}>
+              <Mail size={15} /> sslg.gubatnhs@gmail.com
+            </a>
             <span className="hero-meta-item">
-              <Globe size={15} /> sslg.gov.ph
-            </span>
-            <span className="hero-meta-item">
-              <Calendar size={15} /> Founded 2024 • Academic Year 2026-2027
+              <Calendar size={15} /> Academic Year 2026-2027
             </span>
           </div>
 
           {/* Social Icons Bar */}
           <div className="hero-social-bar">
-            <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hero-social-btn" title="Twitter / X">
-              <TwitterIcon size={16} />
-            </a>
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="hero-social-btn" title="GitHub Research Repo">
-              <GithubIcon size={16} />
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hero-social-btn" title="LinkedIn Page">
-              <LinkedinIcon size={16} />
+            <a href="https://www.facebook.com/GubatNHS.SSLG" target="_blank" rel="noreferrer" className="hero-social-btn" title="Facebook Page">
+              <Globe size={16} />
             </a>
             <button onClick={onContactClick} className="hero-social-btn" title="Email Contact">
               <Mail size={17} />
