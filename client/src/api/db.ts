@@ -178,13 +178,31 @@ export async function dbDeleteGalleryItem(id: string): Promise<void> {
 // FEEDBACK
 // -------------------------------------------------------------
 export async function dbGetFeedback(): Promise<FeedbackSubmission[]> {
+  const cached = localStorage.getItem(STORAGE_KEYS.FEEDBACK);
+  let localItems: FeedbackSubmission[] = [];
+  if (cached) {
+    try {
+      localItems = JSON.parse(cached);
+    } catch {
+      // ignore
+    }
+  }
+
   try {
     const { data, error } = await supabase.from('feedback').select('*').order('created_at', { ascending: false });
     if (!error && data) {
-      if (data.length > 0) {
-        localStorage.setItem(STORAGE_KEYS.FEEDBACK, JSON.stringify(data));
+      const mergedMap = new Map<string, FeedbackSubmission>();
+      localItems.forEach((f) => mergedMap.set(f.id, f));
+      (data as FeedbackSubmission[]).forEach((f) => mergedMap.set(f.id, f));
+      
+      const merged = Array.from(mergedMap.values()).sort(
+        (a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+      );
+
+      if (merged.length > 0) {
+        localStorage.setItem(STORAGE_KEYS.FEEDBACK, JSON.stringify(merged));
       }
-      return data as FeedbackSubmission[];
+      return merged;
     }
     if (error) {
       console.warn('Supabase feedback fetch error:', error.message);
@@ -193,15 +211,7 @@ export async function dbGetFeedback(): Promise<FeedbackSubmission[]> {
     console.warn('Supabase feedback fetch error, falling back to local cache:', err);
   }
 
-  const cached = localStorage.getItem(STORAGE_KEYS.FEEDBACK);
-  if (cached) {
-    try {
-      return JSON.parse(cached);
-    } catch {
-      // ignore
-    }
-  }
-  return [];
+  return localItems;
 }
 
 export async function dbSubmitFeedback(feedback: FeedbackSubmission): Promise<void> {
