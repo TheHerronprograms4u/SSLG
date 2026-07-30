@@ -98,6 +98,14 @@ export const PublicationsTab: React.FC<PublicationsTabProps> = ({ publications, 
           </div>
         ))}
       </div>
+
+      {filteredPubs.length === 0 && (
+        <div style={{ textAlign: 'center', padding: '3rem 1.5rem', background: '#ffffff', borderRadius: '16px', border: '1px solid #fce4ec', marginTop: '1.5rem' }}>
+          <BookOpen size={36} color="var(--accent-primary)" style={{ marginBottom: '0.75rem' }} />
+          <h3 style={{ fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '0.25rem' }}>No publications currently listed</h3>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Academic papers and briefs will be published here upon release.</p>
+        </div>
+      )}
     </div>
   );
 };

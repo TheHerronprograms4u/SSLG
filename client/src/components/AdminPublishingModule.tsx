@@ -7,7 +7,6 @@ import {
   Plus,
   Trash2,
   Image as ImageIcon,
-  Sparkles,
   Lock,
   Layers,
   RotateCcw
@@ -46,12 +45,9 @@ export const AdminPublishingModule: React.FC<AdminPublishingModuleProps> = ({
   const [authors, setAuthors] = useState('Gubat NHS SSLG');
   const [organization, setOrganization] = useState('Gubat NHS SSLG Innovation Hub');
   const [datePublished, setDatePublished] = useState(new Date().toISOString().split('T')[0]);
-  const [coverImage, setCoverImage] = useState('https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80');
-  const [galleryImages, setGalleryImages] = useState<string[]>([
-    'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80'
-  ]);
-  const [docName, setDocName] = useState('Research Project Specifications.pdf');
+  const [coverImage, setCoverImage] = useState('');
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [docName, setDocName] = useState('');
 
   const handleSimulatedUpload = (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -149,7 +145,7 @@ export const AdminPublishingModule: React.FC<AdminPublishingModuleProps> = ({
         </div>
         <div className="admin-lock-actions">
           <button onClick={onLogin} className="button admin-demo-login-btn">
-            <Sparkles size={16} /> Instant Demo Admin Login
+            <Lock size={16} /> Admin Login
           </button>
         </div>
       </div>

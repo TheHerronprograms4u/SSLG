@@ -58,6 +58,14 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ galleryItems, onOpenLigh
           </div>
         ))}
       </div>
+
+      {filteredItems.length === 0 && (
+        <div style={{ textAlign: 'center', padding: '3rem 1.5rem', background: '#ffffff', borderRadius: '16px', border: '1px solid #fce4ec', marginTop: '1.5rem' }}>
+          <ImageIcon size={36} color="var(--accent-primary)" style={{ marginBottom: '0.75rem' }} />
+          <h3 style={{ fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '0.25rem' }}>No media items currently available</h3>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Photos and media will be published by the SSLG media committee.</p>
+        </div>
+      )}
     </div>
   );
 };

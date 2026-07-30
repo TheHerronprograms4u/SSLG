@@ -8,6 +8,7 @@ import { ProjectDetailModal } from '../components/ProjectDetailModal';
 import { FeedbackModal } from '../components/FeedbackModal';
 import { SearchModal } from '../components/SearchModal';
 import { LightboxModal } from '../components/LightboxModal';
+import { AdminLoginModal } from '../components/AdminLoginModal';
 import { Toast } from '../components/Toast';
 
 import { AboutTab } from './AboutTab';
@@ -70,6 +71,7 @@ export const Home: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -81,9 +83,7 @@ export const Home: React.FC = () => {
       localStorage.setItem('sslg_admin_auth', 'false');
       showToast('Admin logged out.');
     } else {
-      setIsAdmin(true);
-      localStorage.setItem('sslg_admin_auth', 'true');
-      showToast('Logged in as Administrator.');
+      setIsAdminLoginOpen(true);
     }
   };
 
@@ -125,6 +125,7 @@ export const Home: React.FC = () => {
       <div className="main-content-layout">
         <HeroHeader
           onContactClick={() => setActiveTab('contact')}
+          onShareVoiceClick={() => setIsFeedbackOpen(true)}
         />
 
         <Navigation
@@ -145,11 +146,7 @@ export const Home: React.FC = () => {
 
         <AdminPublishingModule
           isAdmin={isAdmin}
-          onLogin={() => {
-            setIsAdmin(true);
-            localStorage.setItem('sslg_admin_auth', 'true');
-            showToast('Administrator Mode Activated');
-          }}
+          onLogin={() => setIsAdminLoginOpen(true)}
           onLogout={() => {
             setIsAdmin(false);
             localStorage.setItem('sslg_admin_auth', 'false');
@@ -324,6 +321,16 @@ export const Home: React.FC = () => {
       <LightboxModal
         imageUrl={lightboxImg}
         onClose={() => setLightboxImg(null)}
+      />
+
+      <AdminLoginModal
+        isOpen={isAdminLoginOpen}
+        onClose={() => setIsAdminLoginOpen(false)}
+        onSuccess={() => {
+          setIsAdmin(true);
+          localStorage.setItem('sslg_admin_auth', 'true');
+        }}
+        onShowToast={showToast}
       />
 
       <Toast

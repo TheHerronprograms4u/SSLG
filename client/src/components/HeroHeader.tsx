@@ -5,15 +5,17 @@ import {
   MapPin,
   Calendar,
   Mail,
-  Award
+  Award,
+  MessageSquare,
+  Sparkles
 } from 'lucide-react';
-
 
 interface HeroHeaderProps {
   onContactClick?: () => void;
+  onShareVoiceClick?: () => void;
 }
 
-export const HeroHeader: React.FC<HeroHeaderProps> = ({ onContactClick }) => {
+export const HeroHeader: React.FC<HeroHeaderProps> = ({ onContactClick, onShareVoiceClick }) => {
   return (
     <header className="hero-profile-container">
       {/* Cover Banner */}
@@ -47,6 +49,17 @@ export const HeroHeader: React.FC<HeroHeaderProps> = ({ onContactClick }) => {
           <div className="hero-avatar-status" title="Active Organization Hub" />
         </div>
 
+        {/* Enlarged & Centered Share Your Voice Feature Button */}
+        <button
+          onClick={onShareVoiceClick}
+          className="hero-share-voice-btn"
+          title="Submit Student Voice & Feedback"
+        >
+          <MessageSquare size={22} />
+          <span>Share Your Voice</span>
+          <Sparkles size={20} className="sparkle-icon" />
+        </button>
+
         {/* Profile Identity Details */}
         <div className="hero-identity">
           <div className="hero-title-row">
@@ -68,7 +81,7 @@ export const HeroHeader: React.FC<HeroHeaderProps> = ({ onContactClick }) => {
           </p>
 
           <p className="hero-bio">
-            Empowering student voices, pioneering academic & technological innovations, and advancing data-driven campus governance across secondary education.
+            Help us build a better student experience. Share your thoughts, ideas, and concerns directly with Gubat National High School SSLG.
           </p>
 
           {/* Institutional Metadata & Links */}
