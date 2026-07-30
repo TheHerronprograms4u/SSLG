@@ -197,7 +197,7 @@ const Admin: React.FC = () => {
             >
               Total Responses
             </div>
-            <div style={{ fontSize: "2rem", fontWeight: 800, color: "#eb8daf" }}>
+            <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--accent-primary)" }}>
               {stats.totalResponses}
             </div>
           </div>
@@ -224,11 +224,11 @@ const Admin: React.FC = () => {
                   alignItems: "flex-end",
                 }}
               >
-                <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "#eb8daf" }}>
+                <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--accent-primary)" }}>
                   {item.count}
                 </div>
                 <div
-                  style={{ fontSize: "0.8rem", color: "#eb8daf" }}
+                  style={{ fontSize: "0.8rem", color: "var(--accent-primary)", fontWeight: 700 }}
                 >
                   ★ {item.avg_rating.toFixed(1)}
                 </div>
@@ -295,7 +295,7 @@ const Admin: React.FC = () => {
                   <Clock size={14} />{" "}
                   {new Date(res.created_at).toLocaleDateString()}
                 </div>
-                <div style={{ color: "#eb8daf", fontWeight: 700 }}>★ {res.rating}</div>
+                <div style={{ color: "var(--accent-primary)", fontWeight: 700 }}>★ {res.rating}</div>
               </div>
             </div>
             <p style={{ marginBottom: "1rem", color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>

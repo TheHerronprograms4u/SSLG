@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "cd client && npm run dev",
     "install": "cd client && npm install",
-    "build": "npm run build --prefix client && cp -r client/dist/. ."
+    "build": "npm run build --prefix client && node -e \"require('fs').cpSync('client/dist', '.', { recursive: true })\""
   },
   "dependencies": {
     "lucide-react": "^1.7.0",
