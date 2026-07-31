@@ -50,31 +50,37 @@ export const AdminPublishingModule: React.FC<AdminPublishingModuleProps> = ({
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [docName, setDocName] = useState('');
 
-  const handleSimulatedUpload = (files: FileList | null) => {
+  const handleFileUpload = (files: FileList | null) => {
     if (!files || files.length === 0) return;
     setIsUploading(true);
     setUploadProgress(10);
 
-    const interval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsUploading(false);
-          onShowToast(`${files.length} media file(s) processed with Masonry & Lightbox metadata!`);
-          
-          const sampleUrls = [
-            'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80'
-          ];
-          const newUrl = sampleUrls[Math.floor(Math.random() * sampleUrls.length)];
-          setGalleryImages((prevArr) => [...prevArr, newUrl]);
+    const fileList = Array.from(files);
+    let loadedCount = 0;
+    const loadedUrls: string[] = [];
 
-          return 100;
+    fileList.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        if (result) {
+          loadedUrls.push(result);
         }
-        return prev + 25;
-      });
-    }, 200);
+        loadedCount++;
+        const pct = Math.round((loadedCount / fileList.length) * 100);
+        setUploadProgress(pct);
+
+        if (loadedCount === fileList.length) {
+          setIsUploading(false);
+          onShowToast(`${fileList.length} image file(s) uploaded successfully!`);
+          setGalleryImages((prevArr) => [...prevArr, ...loadedUrls]);
+          if (!coverImage && loadedUrls.length > 0) {
+            setCoverImage(loadedUrls[0]);
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -89,7 +95,7 @@ export const AdminPublishingModule: React.FC<AdminPublishingModuleProps> = ({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    handleSimulatedUpload(e.dataTransfer.files);
+    handleFileUpload(e.dataTransfer.files);
   };
 
   const handlePublishSubmit = (e: React.FormEvent) => {
@@ -289,14 +295,35 @@ export const AdminPublishingModule: React.FC<AdminPublishingModuleProps> = ({
             </h4>
 
             <div className="form-group">
-              <label className="form-label">Featured Cover Image URL</label>
-              <input
-                type="text"
-                className="input"
-                placeholder="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80"
-                value={coverImage}
-                onChange={(e) => setCoverImage(e.target.value)}
-              />
+              <label className="form-label">Featured Cover Image</label>
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                <input
+                  type="text"
+                  className="input"
+                  placeholder="Paste image URL or click Upload ->"
+                  value={coverImage}
+                  onChange={(e) => setCoverImage(e.target.value)}
+                />
+                <label className="button browse-file-btn" style={{ whiteSpace: 'nowrap', cursor: 'pointer', padding: '0.6rem 1rem' }}>
+                  Upload Cover
+                  <input
+                    type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                          const res = ev.target?.result as string;
+                          if (res) setCoverImage(res);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                </label>
+              </div>
             </div>
 
             <div
@@ -316,7 +343,7 @@ export const AdminPublishingModule: React.FC<AdminPublishingModuleProps> = ({
                   multiple
                   accept="image/*"
                   style={{ display: 'none' }}
-                  onChange={(e) => handleSimulatedUpload(e.target.files)}
+                  onChange={(e) => handleFileUpload(e.target.files)}
                 />
               </label>
 
