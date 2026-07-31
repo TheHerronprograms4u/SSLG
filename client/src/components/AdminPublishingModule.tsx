@@ -127,8 +127,8 @@ export const AdminPublishingModule: React.FC<AdminPublishingModuleProps> = ({
         }
       ],
       comments: [],
-      likes: 1,
-      reads: 12,
+      likes: 0,
+      reads: 0,
       featured: status === 'Featured'
     };
 

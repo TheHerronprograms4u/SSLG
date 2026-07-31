@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Project, Comment } from '../types';
 import {
   X,
@@ -23,6 +23,7 @@ interface ProjectDetailModalProps {
   onSelectRelated: (project: Project) => void;
   onOpenLightbox: (imageUrl: string) => void;
   onShowToast: (msg: string) => void;
+  onUpdateProject?: (updated: Project) => void;
 }
 
 export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
@@ -31,7 +32,8 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
   allProjects,
   onSelectRelated,
   onOpenLightbox,
-  onShowToast
+  onShowToast,
+  onUpdateProject
 }) => {
   if (!project) return null;
 
@@ -42,14 +44,28 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
   const [newCommentText, setNewCommentText] = useState('');
   const [authorName, setAuthorName] = useState('');
 
+  useEffect(() => {
+    if (project) {
+      setLikesCount(project.likes);
+      setComments(project.comments || []);
+    }
+  }, [project?.id, project?.likes, project?.comments]);
+
+  useEffect(() => {
+    if (project && onUpdateProject) {
+      const newReads = (project.reads || 0) + 1;
+      onUpdateProject({ ...project, reads: newReads });
+    }
+  }, [project?.id]);
+
   const handleLike = () => {
-    if (!hasLiked) {
-      setLikesCount(likesCount + 1);
-      setHasLiked(true);
-      onShowToast('You applauded this research project!');
-    } else {
-      setLikesCount(likesCount - 1);
-      setHasLiked(false);
+    const newCount = !hasLiked ? likesCount + 1 : Math.max(0, likesCount - 1);
+    setLikesCount(newCount);
+    setHasLiked(!hasLiked);
+    onShowToast(!hasLiked ? 'You applauded this research project!' : 'Applaud removed.');
+
+    if (onUpdateProject) {
+      onUpdateProject({ ...project, likes: newCount });
     }
   };
 
@@ -76,17 +92,25 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
       likes: 0
     };
 
-    setComments([newComment, ...comments]);
+    const updatedComments = [newComment, ...comments];
+    setComments(updatedComments);
     setNewCommentText('');
     onShowToast('Comment posted successfully!');
+
+    if (onUpdateProject) {
+      onUpdateProject({ ...project, comments: updatedComments });
+    }
   };
 
   const handleCommentLike = (commentId: string) => {
-    setComments(
-      comments.map((c) =>
-        c.id === commentId ? { ...c, likes: c.likes + 1 } : c
-      )
+    const updatedComments = comments.map((c) =>
+      c.id === commentId ? { ...c, likes: c.likes + 1 } : c
     );
+    setComments(updatedComments);
+
+    if (onUpdateProject) {
+      onUpdateProject({ ...project, comments: updatedComments });
+    }
   };
 
   const relatedProjects = allProjects

@@ -18,6 +18,7 @@ import { TeamTab } from './TeamTab';
 import { ContactTab } from './ContactTab';
 
 import type { Project, Publication, GalleryItem, TeamMember } from '../types';
+import { supabase } from '../api/supabase';
 import {
   INITIAL_PROJECTS,
   INITIAL_PUBLICATIONS,
@@ -51,18 +52,49 @@ export const Home: React.FC = () => {
   useEffect(() => {
     async function initDatabaseData() {
       const dbProjs = await dbGetProjects();
-      if (dbProjs && dbProjs.length > 0) setProjects(dbProjs);
+      if (dbProjs) setProjects(dbProjs);
 
       const dbPubs = await dbGetPublications();
-      if (dbPubs && dbPubs.length > 0) setPublications(dbPubs);
+      if (dbPubs) setPublications(dbPubs);
 
       const dbGal = await dbGetGallery();
-      if (dbGal && dbGal.length > 0) setGallery(dbGal);
+      if (dbGal) setGallery(dbGal);
 
       const dbTm = await dbGetTeam();
-      if (dbTm && dbTm.length > 0) setTeam(dbTm);
+      if (dbTm) setTeam(dbTm);
     }
     initDatabaseData();
+
+    // Supabase Real-time Subscriptions for Engagements and Content Updates
+    const channel = supabase
+      .channel('realtime_home_engagements')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'projects' }, async () => {
+        const dbProjs = await dbGetProjects();
+        if (dbProjs) {
+          setProjects(dbProjs);
+          setSelectedProject((prev) => {
+            if (!prev) return null;
+            return dbProjs.find((p) => p.id === prev.id) || prev;
+          });
+        }
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'publications' }, async () => {
+        const dbPubs = await dbGetPublications();
+        if (dbPubs) setPublications(dbPubs);
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'gallery' }, async () => {
+        const dbGal = await dbGetGallery();
+        if (dbGal) setGallery(dbGal);
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'team' }, async () => {
+        const dbTm = await dbGetTeam();
+        if (dbTm) setTeam(dbTm);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -97,15 +129,19 @@ export const Home: React.FC = () => {
     await dbDeleteProject(id);
   };
 
+  const handleUpdateProject = async (updatedProj: Project) => {
+    setProjects((prev) => prev.map((p) => (p.id === updatedProj.id ? updatedProj : p)));
+    if (selectedProject && selectedProject.id === updatedProj.id) {
+      setSelectedProject(updatedProj);
+    }
+    await dbSaveProject(updatedProj);
+  };
+
   const handleLikeProject = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    const updated = projects.map((p) =>
-      p.id === id ? { ...p, likes: p.likes + 1 } : p
-    );
-    setProjects(updated);
-    const target = updated.find((p) => p.id === id);
+    const target = projects.find((p) => p.id === id);
     if (target) {
-      await dbSaveProject(target);
+      await handleUpdateProject({ ...target, likes: target.likes + 1 });
     }
     showToast('Applauded project initiative!');
   };
@@ -301,6 +337,7 @@ export const Home: React.FC = () => {
         onSelectRelated={setSelectedProject}
         onOpenLightbox={(url) => setLightboxImg(url)}
         onShowToast={showToast}
+        onUpdateProject={handleUpdateProject}
       />
 
       <FeedbackModal
