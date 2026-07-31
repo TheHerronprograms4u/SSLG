@@ -10,14 +10,121 @@ const STORAGE_KEYS = {
 };
 
 // -------------------------------------------------------------
+// HELPER MAPPERS FOR SUPABASE LOWERCASE COLUMNS
+// -------------------------------------------------------------
+function mapProjectFromDb(row: any): Project {
+  return {
+    id: String(row.id),
+    title: row.title || '',
+    shortSummary: row.shortSummary ?? row.shortsummary ?? '',
+    fullDescription: row.fullDescription ?? row.fulldescription ?? '',
+    category: row.category || '',
+    status: row.status || 'Active',
+    authors: row.authors || [],
+    organization: row.organization || '',
+    datePublished: row.datePublished ?? row.datepublished ?? '',
+    coverImage: row.coverImage ?? row.coverimage ?? '',
+    galleryImages: row.galleryImages ?? row.galleryimages ?? [],
+    resources: row.resources || [],
+    comments: row.comments || [],
+    likes: row.likes || 0,
+    reads: row.reads || 0,
+    featured: row.featured || false
+  };
+}
+
+function mapProjectToDb(p: Project): any {
+  return {
+    id: p.id,
+    title: p.title,
+    shortsummary: p.shortSummary,
+    fulldescription: p.fullDescription,
+    category: p.category,
+    status: p.status,
+    authors: p.authors,
+    organization: p.organization,
+    datepublished: p.datePublished,
+    coverimage: p.coverImage,
+    galleryimages: p.galleryImages,
+    resources: p.resources,
+    comments: p.comments,
+    likes: p.likes,
+    reads: p.reads,
+    featured: p.featured
+  };
+}
+
+function mapPublicationFromDb(row: any): Publication {
+  return {
+    id: String(row.id),
+    title: row.title || '',
+    journal: row.journal || '',
+    year: row.year || new Date().getFullYear(),
+    doi: row.doi || '',
+    abstract: row.abstract || '',
+    authors: row.authors || [],
+    pdfUrl: row.pdfUrl ?? row.pdfurl ?? '',
+    citation: row.citation || '',
+    category: row.category || ''
+  };
+}
+
+function mapPublicationToDb(pub: Publication): any {
+  return {
+    id: pub.id,
+    title: pub.title,
+    journal: pub.journal,
+    year: pub.year,
+    doi: pub.doi,
+    abstract: pub.abstract,
+    authors: pub.authors,
+    pdfurl: pub.pdfUrl,
+    citation: pub.citation,
+    category: pub.category
+  };
+}
+
+function mapTeamFromDb(row: any): TeamMember {
+  return {
+    id: String(row.id),
+    name: row.name || '',
+    role: row.role || '',
+    avatar: row.avatar || '',
+    bio: row.bio || '',
+    department: row.department || '',
+    email: row.email || '',
+    socials: row.socials || {},
+    projectsCount: row.projectsCount ?? row.projectscount ?? 0
+  };
+}
+
+function mapTeamToDb(member: TeamMember): any {
+  return {
+    id: member.id,
+    name: member.name,
+    role: member.role,
+    avatar: member.avatar,
+    bio: member.bio,
+    department: member.department,
+    email: member.email,
+    socials: member.socials,
+    projectscount: member.projectsCount
+  };
+}
+
+// -------------------------------------------------------------
 // PROJECTS
 // -------------------------------------------------------------
 export async function dbGetProjects(): Promise<Project[]> {
   try {
-    const { data, error } = await supabase.from('projects').select('*').order('datePublished', { ascending: false });
-    if (!error && data && data.length > 0) {
-      localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(data));
-      return data as Project[];
+    const { data, error } = await supabase.from('projects').select('*').order('datepublished', { ascending: false });
+    if (!error && data) {
+      const mapped = data.map(mapProjectFromDb);
+      localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(mapped));
+      return mapped;
+    }
+    if (error) {
+      console.warn('Supabase projects fetch error:', error.message);
     }
   } catch (err) {
     console.warn('Supabase projects fetch error, falling back to local cache:', err);
@@ -46,7 +153,11 @@ export async function dbSaveProject(project: Project): Promise<void> {
   localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(updated));
 
   try {
-    await supabase.from('projects').upsert(project);
+    const dbPayload = mapProjectToDb(project);
+    const { error } = await supabase.from('projects').upsert(dbPayload);
+    if (error) {
+      console.warn('Supabase projects save error:', error.message);
+    }
   } catch (err) {
     console.warn('Supabase projects save error:', err);
   }
@@ -58,7 +169,10 @@ export async function dbDeleteProject(id: string): Promise<void> {
   localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(updated));
 
   try {
-    await supabase.from('projects').delete().eq('id', id);
+    const { error } = await supabase.from('projects').delete().eq('id', id);
+    if (error) {
+      console.warn('Supabase projects delete error:', error.message);
+    }
   } catch (err) {
     console.warn('Supabase projects delete error:', err);
   }
@@ -70,9 +184,13 @@ export async function dbDeleteProject(id: string): Promise<void> {
 export async function dbGetPublications(): Promise<Publication[]> {
   try {
     const { data, error } = await supabase.from('publications').select('*').order('year', { ascending: false });
-    if (!error && data && data.length > 0) {
-      localStorage.setItem(STORAGE_KEYS.PUBLICATIONS, JSON.stringify(data));
-      return data as Publication[];
+    if (!error && data) {
+      const mapped = data.map(mapPublicationFromDb);
+      localStorage.setItem(STORAGE_KEYS.PUBLICATIONS, JSON.stringify(mapped));
+      return mapped;
+    }
+    if (error) {
+      console.warn('Supabase publications fetch error:', error.message);
     }
   } catch (err) {
     console.warn('Supabase publications fetch error, falling back to local cache:', err);
@@ -101,7 +219,11 @@ export async function dbSavePublication(pub: Publication): Promise<void> {
   localStorage.setItem(STORAGE_KEYS.PUBLICATIONS, JSON.stringify(updated));
 
   try {
-    await supabase.from('publications').upsert(pub);
+    const dbPayload = mapPublicationToDb(pub);
+    const { error } = await supabase.from('publications').upsert(dbPayload);
+    if (error) {
+      console.warn('Supabase publications save error:', error.message);
+    }
   } catch (err) {
     console.warn('Supabase publications save error:', err);
   }
@@ -113,7 +235,10 @@ export async function dbDeletePublication(id: string): Promise<void> {
   localStorage.setItem(STORAGE_KEYS.PUBLICATIONS, JSON.stringify(updated));
 
   try {
-    await supabase.from('publications').delete().eq('id', id);
+    const { error } = await supabase.from('publications').delete().eq('id', id);
+    if (error) {
+      console.warn('Supabase publications delete error:', error.message);
+    }
   } catch (err) {
     console.warn('Supabase publications delete error:', err);
   }
@@ -125,9 +250,12 @@ export async function dbDeletePublication(id: string): Promise<void> {
 export async function dbGetGallery(): Promise<GalleryItem[]> {
   try {
     const { data, error } = await supabase.from('gallery').select('*').order('date', { ascending: false });
-    if (!error && data && data.length > 0) {
+    if (!error && data) {
       localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(data));
       return data as GalleryItem[];
+    }
+    if (error) {
+      console.warn('Supabase gallery fetch error:', error.message);
     }
   } catch (err) {
     console.warn('Supabase gallery fetch error, falling back to local cache:', err);
@@ -156,7 +284,10 @@ export async function dbSaveGalleryItem(item: GalleryItem): Promise<void> {
   localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(updated));
 
   try {
-    await supabase.from('gallery').upsert(item);
+    const { error } = await supabase.from('gallery').upsert(item);
+    if (error) {
+      console.warn('Supabase gallery save error:', error.message);
+    }
   } catch (err) {
     console.warn('Supabase gallery save error:', err);
   }
@@ -168,7 +299,10 @@ export async function dbDeleteGalleryItem(id: string): Promise<void> {
   localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(updated));
 
   try {
-    await supabase.from('gallery').delete().eq('id', id);
+    const { error } = await supabase.from('gallery').delete().eq('id', id);
+    if (error) {
+      console.warn('Supabase gallery delete error:', error.message);
+    }
   } catch (err) {
     console.warn('Supabase gallery delete error:', err);
   }
@@ -192,8 +326,8 @@ export async function dbGetFeedback(): Promise<FeedbackSubmission[]> {
     const { data, error } = await supabase.from('feedback').select('*').order('created_at', { ascending: false });
     if (!error && data) {
       const mergedMap = new Map<string, FeedbackSubmission>();
-      localItems.forEach((f) => mergedMap.set(f.id, f));
-      (data as FeedbackSubmission[]).forEach((f) => mergedMap.set(f.id, f));
+      localItems.forEach((f) => mergedMap.set(String(f.id), f));
+      (data as FeedbackSubmission[]).forEach((f) => mergedMap.set(String(f.id), f));
       
       const merged = Array.from(mergedMap.values()).sort(
         (a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
@@ -247,7 +381,10 @@ export async function dbDeleteFeedback(id: string): Promise<void> {
   localStorage.setItem(STORAGE_KEYS.FEEDBACK, JSON.stringify(updated));
 
   try {
-    await supabase.from('feedback').delete().eq('id', id);
+    const { error } = await supabase.from('feedback').delete().eq('id', id);
+    if (error) {
+      console.warn('Supabase feedback delete error:', error.message);
+    }
   } catch (err) {
     console.warn('Supabase feedback delete error:', err);
   }
@@ -259,9 +396,13 @@ export async function dbDeleteFeedback(id: string): Promise<void> {
 export async function dbGetTeam(): Promise<TeamMember[]> {
   try {
     const { data, error } = await supabase.from('team').select('*');
-    if (!error && data && data.length > 0) {
-      localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(data));
-      return data as TeamMember[];
+    if (!error && data) {
+      const mapped = data.map(mapTeamFromDb);
+      localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(mapped));
+      return mapped;
+    }
+    if (error) {
+      console.warn('Supabase team fetch error:', error.message);
     }
   } catch (err) {
     console.warn('Supabase team fetch error:', err);
@@ -290,7 +431,11 @@ export async function dbSaveTeamMember(member: TeamMember): Promise<void> {
   localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(updated));
 
   try {
-    await supabase.from('team').upsert(member);
+    const dbPayload = mapTeamToDb(member);
+    const { error } = await supabase.from('team').upsert(dbPayload);
+    if (error) {
+      console.warn('Supabase team save error:', error.message);
+    }
   } catch (err) {
     console.warn('Supabase team save error:', err);
   }
